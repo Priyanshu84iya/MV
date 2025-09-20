@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeLive - Professional Music Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Bar -->
+        <header class="header-bar">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-music"></i>
+                    <span class="logo-text">VibeLive</span>
+                </div>
+                <div class="venue-info">
+                    <span class="venue-name">Professional Audio Visualizer</span>
+                    <span class="live-indicator">
+                        <i class="fas fa-circle"></i>
+                        LIVE
+                    </span>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <div class="time-display">
+                    <i class="fas fa-clock"></i>
+                    <span id="currentTime"></span>
+                </div>
+                <div class="status-indicator">
+                    <i class="fas fa-signal"></i>
+                    <span id="connectionStatus">READY</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Left Control Panel -->
+            <aside class="control-panel">
+                <div class="panel-section">
+                    <h3 class="panel-title">
+                        <i class="fas fa-play-circle"></i>
+                        Audio Control
+                    </h3>
+                    
+                    <div class="audio-input-section">
+                        <input type="file" id="audioFile" accept="audio/*" class="file-input">
+                        <label for="audioFile" class="file-upload-btn">
+                            <i class="fas fa-upload"></i>
+                            <span>Load Track</span>
+                        </label>
+                        
+                        <div class="playback-controls">
+                            <button id="playBtn" class="control-btn primary">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button id="pauseBtn" class="control-btn">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button id="stopBtn" class="control-btn">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="volume-section">
+                            <label for="volumeSlider" class="volume-label">
+                                <i class="fas fa-volume-up"></i>
+                                Volume
+                            </label>
+                            <div class="volume-control">
+                                <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider">
+                                <span class="volume-value">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3 class="panel-title">
+                        <i class="fas fa-microphone"></i>
+                        Live Input
+                    </h3>
+                    
+                    <button id="micBtn" class="mic-button">
+                        <div class="mic-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <div class="mic-status">
+                            <span class="mic-text">Activate Mic</span>
+                            <span class="mic-indicator"></span>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="panel-section">
+                    <h3 class="panel-title">
+                        <i class="fas fa-info-circle"></i>
+                        Track Info
+                    </h3>
+                    
+                    <div class="track-info">
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span id="status" class="info-value">Ready</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Track:</span>
+                            <span id="songInfo" class="info-value">No track loaded</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Visualization Area -->
+            <section class="visualization-area">
+                <div class="visualization-header">
+                    <h2 class="viz-title">Audio Visualization</h2>
+                    <div class="viz-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-wave-square"></i>
+                            <span id="frequencyRange">20Hz - 20kHz</span>
+                        </span>
+                        <span class="stat-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span id="frameRate">60 FPS</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="canvas-container">
+                    <canvas id="visualizer" width="800" height="400"></canvas>
+                    <div class="canvas-overlay">
+                        <div class="corner-decoration top-left"></div>
+                        <div class="corner-decoration top-right"></div>
+                        <div class="corner-decoration bottom-left"></div>
+                        <div class="corner-decoration bottom-right"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Visualization Selector -->
+        <footer class="visualization-selector">
+            <div class="selector-header">
+                <h3 class="selector-title">
+                    <i class="fas fa-palette"></i>
+                    Visualization Modes
+                </h3>
+                <div class="mode-counter">
+                    <span id="currentMode">1</span> / <span id="totalModes">15</span>
+                </div>
+            </div>
+            
+            <div class="viz-grid">
+                <button class="viz-card active" data-viz="frequency">
+                    <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Frequency Bars</span>
+                        <span class="card-desc">Classic spectrum analysis</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="waveform">
+                    <div class="card-icon"><i class="fas fa-wave-square"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Waveform</span>
+                        <span class="card-desc">Pure audio wave</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="spectrum">
+                    <div class="card-icon"><i class="fas fa-signal"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Spectrum</span>
+                        <span class="card-desc">Advanced analysis</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="oscilloscope">
+                    <div class="card-icon"><i class="fas fa-tv"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Oscilloscope</span>
+                        <span class="card-desc">Classic scope display</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="spectrogram">
+                    <div class="card-icon"><i class="fas fa-th"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Spectrogram</span>
+                        <span class="card-desc">Time-frequency map</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="circle">
+                    <div class="card-icon"><i class="fas fa-circle-notch"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Circle Wave</span>
+                        <span class="card-desc">Radial patterns</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="particles">
+                    <div class="card-icon"><i class="fas fa-star"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Particle Storm</span>
+                        <span class="card-desc">Dynamic particles</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="geometric">
+                    <div class="card-icon"><i class="fas fa-shapes"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Geometric</span>
+                        <span class="card-desc">Abstract shapes</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="fractal">
+                    <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Fractal</span>
+                        <span class="card-desc">Mathematical art</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="waveform3d">
+                    <div class="card-icon"><i class="fas fa-cube"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">3D Waveform</span>
+                        <span class="card-desc">Layered waves</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="kaleidoscope">
+                    <div class="card-icon"><i class="fas fa-eye"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Kaleidoscope</span>
+                        <span class="card-desc">Mirror effects</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="liquid">
+                    <div class="card-icon"><i class="fas fa-water"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Liquid Flow</span>
+                        <span class="card-desc">Fluid simulation</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="neon">
+                    <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Neon Glow</span>
+                        <span class="card-desc">Electric vibes</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="spiral">
+                    <div class="card-icon"><i class="fas fa-hurricane"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Spiral Galaxy</span>
+                        <span class="card-desc">Cosmic spirals</span>
+                    </div>
+                </button>
+                
+                <button class="viz-card" data-viz="rain">
+                    <div class="card-icon"><i class="fas fa-code"></i></div>
+                    <div class="card-content">
+                        <span class="card-name">Digital Rain</span>
+                        <span class="card-desc">Matrix style</span>
+                    </div>
+                </button>
+            </div>
+        </footer>
+        
+        <!-- Author Watermark -->
+        <div class="author-watermark">
+            <div class="watermark-content">
+                <div class="author-info">
+                    <div class="author-name">
+                        <i class="fas fa-code"></i>
+                        <span>Created by <strong>Priyanshu Chaurasiya</strong></span>
+                    </div>
+                    <div class="author-links">
+                        <a href="https://github.com/Priyanshu84iya" target="_blank" class="social-link github" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/priyanshu-chaurasiya-8986a833b" target="_blank" class="social-link linkedin" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://www.instagram.com/pry_uchiha/" target="_blank" class="social-link instagram" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://discord.com/channels/@me/986668410685521940" target="_blank" class="social-link discord" title="Discord">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://coff.ee/priyanshu6o" target="_blank" class="social-link coffee" title="Buy Me A Coffee">
+                            <i class="fas fa-coffee"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="watermark-toggle">
+                    <button id="watermarkToggle" class="toggle-btn" title="Toggle Author Info">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="audioElement" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
