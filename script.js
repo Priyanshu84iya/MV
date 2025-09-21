@@ -317,6 +317,38 @@ class MusicVisualizer {
         closePlayer.addEventListener('click', () => {
             this.closeYouTubePlayer();
         });
+        
+        // YouTube control buttons
+        document.getElementById('youtubePlayBtn').addEventListener('click', () => {
+            this.resumeYouTubeVideo();
+        });
+        
+        document.getElementById('youtubePauseBtn').addEventListener('click', () => {
+            this.pauseYouTubeVideo();
+        });
+    }
+    
+    resumeYouTubeVideo() {
+        if (this.youtubePlayer && this.youtubePlayer.playVideo) {
+            try {
+                this.youtubePlayer.playVideo();
+                this.updateStatus('Playing YouTube video');
+            } catch (error) {
+                console.error('Error playing YouTube video:', error);
+                this.updateStatus('Error playing video - try clicking on the video');
+            }
+        }
+    }
+    
+    pauseYouTubeVideo() {
+        if (this.youtubePlayer && this.youtubePlayer.pauseVideo) {
+            try {
+                this.youtubePlayer.pauseVideo();
+                this.updateStatus('YouTube video paused');
+            } catch (error) {
+                console.error('Error pausing YouTube video:', error);
+            }
+        }
     }
     
     async searchYouTube(query) {
@@ -443,16 +475,23 @@ class MusicVisualizer {
             width: '100%',
             videoId: videoId,
             playerVars: {
-                'autoplay': 1,
+                'autoplay': 0, // Changed to 0 to prevent autoplay issues
                 'controls': 1,
                 'showinfo': 0,
                 'rel': 0,
                 'enablejsapi': 1,
-                'origin': window.location.origin
+                'origin': window.location.origin,
+                'playsinline': 1,
+                'fs': 1,
+                'cc_load_policy': 0,
+                'iv_load_policy': 3,
+                'modestbranding': 1,
+                'start': 0
             },
             events: {
                 'onReady': (event) => this.onYouTubePlayerReady(event),
-                'onStateChange': (event) => this.onYouTubePlayerStateChange(event)
+                'onStateChange': (event) => this.onYouTubePlayerStateChange(event),
+                'onError': (event) => this.onYouTubePlayerError(event)
             }
         });
         
@@ -461,11 +500,44 @@ class MusicVisualizer {
     
     onYouTubePlayerReady(event) {
         console.log('YouTube player ready');
-        this.updateStatus('YouTube video loaded');
-        document.getElementById('connectionStatus').textContent = 'YOUTUBE';
         
-        // Start audio visualization simulation
-        this.startYouTubeVisualization();
+        // Ensure the player can play
+        try {
+            // Set volume to audible level
+            this.youtubePlayer.setVolume(70);
+            
+            this.updateStatus('YouTube ready - Click PLAY button or video to start');
+            document.getElementById('connectionStatus').textContent = 'YOUTUBE READY';
+            
+            // Automatically start playing after a short delay to ensure user interaction
+            setTimeout(() => {
+                try {
+                    this.youtubePlayer.playVideo();
+                } catch (e) {
+                    console.log('Autoplay blocked - user interaction required');
+                    this.updateStatus('Click the PLAY button to start with audio visualization');
+                }
+            }, 1000);
+            
+        } catch (error) {
+            console.error('YouTube player ready error:', error);
+            this.updateStatus('YouTube loaded - click PLAY button to start');
+        }
+    }
+    
+    onYouTubePlayerError(event) {
+        const errors = {
+            2: 'Invalid video ID',
+            5: 'HTML5 player error',
+            100: 'Video not found or private',
+            101: 'Video embedding not allowed',
+            150: 'Video embedding not allowed'
+        };
+        
+        const errorMessage = errors[event.data] || 'Unknown YouTube error';
+        console.error('YouTube player error:', errorMessage);
+        this.updateStatus(`YouTube Error: ${errorMessage}`);
+        document.getElementById('connectionStatus').textContent = 'YOUTUBE ERROR';
     }
     
     onYouTubePlayerStateChange(event) {
@@ -484,9 +556,16 @@ class MusicVisualizer {
         switch (event.data) {
             case YT.PlayerState.PLAYING:
                 this.isYouTubeMode = true;
-                this.updateStatus('Playing YouTube video');
+                this.updateStatus('YouTube video playing with audio');
                 document.getElementById('connectionStatus').textContent = 'YOUTUBE PLAYING';
                 this.startYouTubeVisualization();
+                
+                // Ensure volume is set
+                try {
+                    this.youtubePlayer.setVolume(50);
+                } catch (e) {
+                    console.warn('Could not set YouTube volume:', e);
+                }
                 break;
             case YT.PlayerState.PAUSED:
                 this.updateStatus('YouTube video paused');
@@ -497,6 +576,14 @@ class MusicVisualizer {
                 this.updateStatus('YouTube video ended');
                 document.getElementById('connectionStatus').textContent = 'YOUTUBE';
                 this.stopVisualization();
+                break;
+            case YT.PlayerState.BUFFERING:
+                this.updateStatus('YouTube video buffering...');
+                document.getElementById('connectionStatus').textContent = 'YOUTUBE BUFFERING';
+                break;
+            case YT.PlayerState.CUED:
+                this.updateStatus('YouTube video ready to play');
+                document.getElementById('connectionStatus').textContent = 'YOUTUBE READY';
                 break;
         }
     }

@@ -75,11 +75,23 @@
                                 <div id="youtubePlayer" class="youtube-player hidden">
                                     <div class="player-info">
                                         <span id="currentVideoTitle">No video selected</span>
-                                        <button id="closePlayer" class="close-player-btn">
-                                            <i class="fas fa-times"></i>
-                                        </button>
+                                        <div class="youtube-controls">
+                                            <button id="youtubePlayBtn" class="youtube-control-btn">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                            <button id="youtubePauseBtn" class="youtube-control-btn">
+                                                <i class="fas fa-pause"></i>
+                                            </button>
+                                            <button id="closePlayer" class="close-player-btn">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div id="ytPlayerContainer"></div>
+                                    <div class="youtube-hint">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>Click PLAY button above or on the video for audio playback</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
