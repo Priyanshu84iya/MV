@@ -19,6 +19,8 @@ class MusicVisualizer {
         this.spectrogramData = [];
         this.liquidPoints = [];
         this.fractalPoints = [];
+        this.isYouTubeMode = false;
+        this.currentYouTubeVideo = null;
         
         this.init();
     }
@@ -85,6 +87,9 @@ class MusicVisualizer {
         
         // Initialize watermark toggle
         this.setupWatermarkToggle();
+        
+        // Initialize YouTube functionality
+        this.setupYouTubeIntegration();
         
         // Audio element events
         this.audioElement.addEventListener('ended', () => {
