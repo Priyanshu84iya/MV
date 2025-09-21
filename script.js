@@ -318,6 +318,15 @@ class MusicVisualizer {
             this.closeYouTubePlayer();
         });
         
+        // Search suggestions
+        document.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const query = item.dataset.query;
+                youtubeSearch.value = query;
+                this.searchYouTube(query);
+            });
+        });
+        
         // YouTube control buttons
         document.getElementById('youtubePlayBtn').addEventListener('click', () => {
             this.resumeYouTubeVideo();
@@ -355,76 +364,142 @@ class MusicVisualizer {
         if (!query.trim()) return;
         
         const resultsContainer = document.getElementById('youtubeResults');
-        resultsContainer.innerHTML = '<div class="search-loading">Searching YouTube...</div>';
+        resultsContainer.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Searching YouTube...</div>';
         
         try {
-            // Using YouTube Data API v3 - you need to replace YOUR_API_KEY with actual key
-            // For demo, we'll use a working search that returns real video IDs
-            const apiKey = 'AIzaSyDummy_Replace_With_Real_API_Key'; // Replace with your YouTube API key
-            const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&type=video&key=${apiKey}`;
-            
-            // For now, let's use a more realistic approach with actual YouTube video IDs
-            const mockResults = this.getPopularMusicVideos(query);
-            this.displayYouTubeResults(mockResults);
+            // For demo purposes, we'll use YouTube's oEmbed API and search simulation
+            // In production, replace with actual YouTube Data API v3
+            const searchResults = await this.simulateYouTubeSearch(query);
+            this.displayYouTubeResults(searchResults);
             
         } catch (error) {
             console.error('YouTube search error:', error);
-            resultsContainer.innerHTML = '<div class="search-error">Search failed. Please try again.</div>';
+            resultsContainer.innerHTML = '<div class="search-error"><i class="fas fa-exclamation-triangle"></i> Search failed. Please try again.</div>';
         }
     }
     
-    getPopularMusicVideos(query) {
-        // Real YouTube video IDs for popular songs - these will actually work
-        const popularSongs = [
-            {
-                id: 'dQw4w9WgXcQ',
-                title: 'Rick Astley - Never Gonna Give You Up (Official Video)',
-                channelTitle: 'Rick Astley',
-                thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg',
-                duration: '3:33'
-            },
-            {
-                id: 'kJQP7kiw5Fk',
-                title: 'Luis Fonsi - Despacito ft. Daddy Yankee',
-                channelTitle: 'Luis Fonsi',
-                thumbnail: 'https://img.youtube.com/vi/kJQP7kiw5Fk/mqdefault.jpg',
-                duration: '4:42'
-            },
-            {
-                id: 'fJ9rUzIMcZQ',
-                title: 'Queen - Bohemian Rhapsody (Official Video)',
-                channelTitle: 'Queen Official',
-                thumbnail: 'https://img.youtube.com/vi/fJ9rUzIMcZQ/mqdefault.jpg',
-                duration: '5:55'
-            },
-            {
-                id: 'L_jWHffIx5E',
-                title: 'Adele - Rolling in the Deep (Official Music Video)',
-                channelTitle: 'Adele',
-                thumbnail: 'https://img.youtube.com/vi/L_jWHffIx5E/mqdefault.jpg',
-                duration: '3:48'
-            },
-            {
-                id: '2Vv-BfVoq4g',
-                title: 'Ed Sheeran - Perfect (Official Music Video)',
-                channelTitle: 'Ed Sheeran',
-                thumbnail: 'https://img.youtube.com/vi/2Vv-BfVoq4g/mqdefault.jpg',
-                duration: '4:23'
-            }
+    async simulateYouTubeSearch(query) {
+        // This creates a more realistic search simulation
+        // Replace this entire function with actual YouTube Data API v3 implementation
+        
+        const searchTerms = query.toLowerCase().split(' ');
+        
+        // Large database of real YouTube music videos with actual IDs
+        const musicDatabase = [
+            // Pop Music
+            { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up', channel: 'Rick Astley', duration: '3:33', keywords: ['rick', 'astley', 'never', 'gonna', 'give', 'you', 'up', 'classic', 'pop'] },
+            { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee', channel: 'Luis Fonsi', duration: '4:42', keywords: ['despacito', 'luis', 'fonsi', 'daddy', 'yankee', 'spanish', 'latin'] },
+            { id: '2Vv-BfVoq4g', title: 'Ed Sheeran - Perfect', channel: 'Ed Sheeran', duration: '4:23', keywords: ['ed', 'sheeran', 'perfect', 'love', 'wedding'] },
+            { id: 'RgKAFK5djSk', title: 'Wiz Khalifa - See You Again ft. Charlie Puth', channel: 'Wiz Khalifa', duration: '3:57', keywords: ['wiz', 'khalifa', 'charlie', 'puth', 'see', 'you', 'again', 'fast', 'furious'] },
+            { id: '450p7goxZqg', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd', duration: '3:20', keywords: ['weeknd', 'blinding', 'lights', 'synth', 'pop'] },
+            
+            // Rock Music
+            { id: 'fJ9rUzIMcZQ', title: 'Queen - Bohemian Rhapsody', channel: 'Queen Official', duration: '5:55', keywords: ['queen', 'bohemian', 'rhapsody', 'freddie', 'mercury', 'rock', 'classic'] },
+            { id: 'tbU3zdAgiX8', title: 'The Beatles - Come Together', channel: 'The Beatles', duration: '4:19', keywords: ['beatles', 'come', 'together', 'john', 'lennon', 'rock'] },
+            { id: 'CD-E-LDc384', title: 'Linkin Park - In The End', channel: 'Linkin Park', duration: '3:36', keywords: ['linkin', 'park', 'in', 'the', 'end', 'nu', 'metal', 'rock'] },
+            { id: 'rY0WxgSXdEE', title: 'AC/DC - Thunderstruck', channel: 'AC/DC', duration: '4:52', keywords: ['acdc', 'ac', 'dc', 'thunderstruck', 'rock', 'metal'] },
+            
+            // Hip Hop / Rap
+            { id: '1w7OgIMMRc4', title: 'Eminem - Rap God', channel: 'Eminem', duration: '6:04', keywords: ['eminem', 'rap', 'god', 'hip', 'hop', 'fast'] },
+            { id: 'YqeW9_5kURI', title: 'Drake - Hotline Bling', channel: 'Drake', duration: '4:27', keywords: ['drake', 'hotline', 'bling', 'hip', 'hop', 'dance'] },
+            { id: 'L_jWHffIx5E', title: 'Adele - Rolling in the Deep', channel: 'Adele', duration: '3:48', keywords: ['adele', 'rolling', 'in', 'the', 'deep', 'soul', 'pop'] },
+            
+            // Electronic / Dance
+            { id: 'at-NHQQOEJc', title: 'David Guetta - Titanium ft. Sia', channel: 'David Guetta', duration: '4:05', keywords: ['david', 'guetta', 'titanium', 'sia', 'edm', 'electronic', 'dance'] },
+            { id: 'hT_nvWreIhg', title: 'The Chainsmokers - Closer ft. Halsey', channel: 'The Chainsmokers', duration: '4:04', keywords: ['chainsmokers', 'closer', 'halsey', 'edm', 'pop'] },
+            { id: 'FM7MFYoylVs', title: 'Daft Punk - Get Lucky ft. Pharrell Williams', channel: 'Daft Punk', duration: '6:07', keywords: ['daft', 'punk', 'get', 'lucky', 'pharrell', 'electronic', 'funk'] },
+            
+            // Classic Hits
+            { id: 'djV11Xbc914', title: 'a-ha - Take On Me', channel: 'a-ha', duration: '3:47', keywords: ['aha', 'take', 'on', 'me', '80s', 'synth', 'pop'] },
+            { id: 'ZbZSe6N_BXs', title: 'Journey - Dont Stop Believin', channel: 'Journey', duration: '4:11', keywords: ['journey', 'dont', 'stop', 'believin', 'rock', 'classic'] },
+            { id: 'rTusOzvnEDo', title: 'Bon Jovi - Livin On A Prayer', channel: 'Bon Jovi', duration: '4:09', keywords: ['bon', 'jovi', 'livin', 'on', 'a', 'prayer', 'rock'] },
+            
+            // Recent Hits
+            { id: 'b9KoGh5Va24', title: 'Harry Styles - As It Was', channel: 'Harry Styles', duration: '2:47', keywords: ['harry', 'styles', 'as', 'it', 'was', 'pop'] },
+            { id: 'YBHQbu5rbdQ', title: 'Dua Lipa - Levitating', channel: 'Dua Lipa', duration: '3:23', keywords: ['dua', 'lipa', 'levitating', 'pop', 'disco'] },
+            { id: 'Zi_XLOBDo_Y', title: 'Billie Eilish - bad guy', channel: 'Billie Eilish', duration: '3:14', keywords: ['billie', 'eilish', 'bad', 'guy', 'alternative', 'pop'] },
+            
+            // More variety
+            { id: 'XqZsoesa55w', title: 'Baby Shark Dance', channel: 'Pinkfong', duration: '2:17', keywords: ['baby', 'shark', 'dance', 'kids', 'children'] },
+            { id: 'OPf0YbXqDm0', title: 'Mark Ronson - Uptown Funk ft. Bruno Mars', channel: 'Mark Ronson', duration: '4:30', keywords: ['uptown', 'funk', 'bruno', 'mars', 'mark', 'ronson', 'funk'] },
+            { id: 'CevxZvSJLk8', title: 'Katy Perry - Roar', channel: 'Katy Perry', duration: '3:43', keywords: ['katy', 'perry', 'roar', 'pop', 'empowerment'] },
         ];
         
-        // Filter based on query or return all for demo
-        return popularSongs.filter(song => 
-            song.title.toLowerCase().includes(query.toLowerCase()) ||
-            song.channelTitle.toLowerCase().includes(query.toLowerCase())
-        ).slice(0, 3).concat(popularSongs.slice(0, 2)); // Always show some results
+        // Search algorithm
+        const searchResults = musicDatabase.filter(song => {
+            const titleWords = song.title.toLowerCase().split(/[\s\-\(\)\[\]\.,'"]/).filter(word => word.length > 0);
+            const channelWords = song.channel.toLowerCase().split(/[\s\-\(\)\[\]\.,'"]/).filter(word => word.length > 0);
+            const allSongWords = [...titleWords, ...channelWords, ...song.keywords];
+            
+            // Calculate relevance score
+            let score = 0;
+            searchTerms.forEach(term => {
+                allSongWords.forEach(word => {
+                    if (word.includes(term) || term.includes(word)) {
+                        score += word === term ? 10 : word.startsWith(term) ? 5 : 1;
+                    }
+                });
+            });
+            
+            return score > 0;
+        }).sort((a, b) => {
+            // Sort by relevance (calculate score again for sorting)
+            let scoreA = 0, scoreB = 0;
+            searchTerms.forEach(term => {
+                const wordsA = [...a.title.toLowerCase().split(/[\s\-\(\)\[\]\.,'"]/).filter(w => w.length > 0), ...a.keywords];
+                const wordsB = [...b.title.toLowerCase().split(/[\s\-\(\)\[\]\.,'"]/).filter(w => w.length > 0), ...b.keywords];
+                
+                wordsA.forEach(word => {
+                    if (word.includes(term) || term.includes(word)) {
+                        scoreA += word === term ? 10 : word.startsWith(term) ? 5 : 1;
+                    }
+                });
+                wordsB.forEach(word => {
+                    if (word.includes(term) || term.includes(word)) {
+                        scoreB += word === term ? 10 : word.startsWith(term) ? 5 : 1;
+                    }
+                });
+            });
+            return scoreB - scoreA;
+        }).slice(0, 5); // Return top 5 results
+        
+        // If no matches found, return some popular songs as fallback
+        if (searchResults.length === 0) {
+            return musicDatabase.slice(0, 3).map(song => ({
+                id: song.id,
+                title: `${song.title} (Suggested)`,
+                channelTitle: song.channel,
+                thumbnail: `https://img.youtube.com/vi/${song.id}/mqdefault.jpg`,
+                duration: song.duration
+            }));
+        }
+        
+        // Format results for display
+        return searchResults.map(song => ({
+            id: song.id,
+            title: song.title,
+            channelTitle: song.channel,
+            thumbnail: `https://img.youtube.com/vi/${song.id}/mqdefault.jpg`,
+            duration: song.duration
+        }));
     }
     
     displayYouTubeResults(results) {
         const resultsContainer = document.getElementById('youtubeResults');
         
         if (results.length === 0) {
-            resultsContainer.innerHTML = '<div class="no-results">No results found.</div>';
+            resultsContainer.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>No songs found for "${document.getElementById('youtubeSearch').value}"</p>
+                    <p>Try searching for:</p>
+                    <ul>
+                        <li>Artist name (e.g., "Ed Sheeran")</li>
+                        <li>Song title (e.g., "Blinding Lights")</li>
+                        <li>Artist + Song (e.g., "Adele Rolling in the Deep")</li>
+                    </ul>
+                </div>
+            `;
             return;
         }
         
