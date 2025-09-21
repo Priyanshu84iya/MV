@@ -54,6 +54,36 @@
                             <span>Load Track</span>
                         </label>
                         
+                        <div class="youtube-section">
+                            <button id="youtubeToggle" class="youtube-toggle-btn">
+                                <i class="fab fa-youtube"></i>
+                                <span>YouTube Search</span>
+                            </button>
+                            
+                            <div id="youtubePanel" class="youtube-panel hidden">
+                                <div class="youtube-search">
+                                    <input type="text" id="youtubeSearch" placeholder="Search YouTube..." class="youtube-input">
+                                    <button id="searchBtn" class="search-btn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                
+                                <div id="youtubeResults" class="youtube-results">
+                                    <!-- Search results will be populated here -->
+                                </div>
+                                
+                                <div id="youtubePlayer" class="youtube-player hidden">
+                                    <div class="player-info">
+                                        <span id="currentVideoTitle">No video selected</span>
+                                        <button id="closePlayer" class="close-player-btn">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <iframe id="ytPlayer" width="100%" height="200" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="playback-controls">
                             <button id="playBtn" class="control-btn primary">
                                 <i class="fas fa-play"></i>
