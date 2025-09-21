@@ -98,6 +98,16 @@ Simply open `index.html` in your web browser. Note: File upload may be limited d
 4. Watch real-time visualization respond to audio
 5. Click **"Stop Microphone"** to deactivate
 
+### 🎬 **YouTube Integration**
+1. Click the **"YouTube Search"** button (red YouTube-branded button)
+2. Enter a song name or artist in the search field
+3. Press Enter or click the search icon
+4. Click on any search result to play the video
+5. Enjoy synchronized visualizations with YouTube audio
+6. Click the X button to close the YouTube player
+
+**Note**: The current implementation includes a demo mode with mock search results. For full functionality, you'll need to integrate with the YouTube Data API v3 and obtain an API key from Google Cloud Console.
+
 ### 🎨 **Visualization Modes**
 - Click any of the **15 visualization cards** at the bottom
 - Each mode offers unique visual interpretation of audio
