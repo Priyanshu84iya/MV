@@ -29,6 +29,7 @@ A professional-grade music visualizer designed for clubs, cafes, and live venues
 
 ### 🎛️ **Professional Audio Controls**
 - **File Upload** - Support for all major audio formats (MP3, WAV, OGG, etc.)
+- **YouTube Integration** - Search and play YouTube videos with visualization
 - **Playback Controls** - Play, Pause, Stop with visual feedback
 - **Volume Control** - Real-time volume adjustment with percentage display
 - **Live Microphone** - Real-time visualization of microphone input

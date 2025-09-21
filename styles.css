@@ -428,6 +428,43 @@ body {
     background: #000;
 }
 
+.search-loading, .search-error, .no-results {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.search-error {
+    color: var(--neon-pink);
+}
+
+/* YouTube Mobile Responsive */
+@media (max-width: 768px) {
+    .youtube-panel {
+        max-height: 300px;
+    }
+    
+    .youtube-results {
+        max-height: 150px;
+    }
+    
+    .result-thumbnail {
+        width: 50px;
+        height: 38px;
+    }
+    
+    .result-title {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+    }
+    
+    #ytPlayer {
+        height: 150px;
+    }
+}
+
 .playback-controls {
     display: flex;
     gap: 0.5rem;
