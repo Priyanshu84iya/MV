@@ -287,6 +287,180 @@ class MusicVisualizer {
         }
     }
     
+    setupYouTubeIntegration() {
+        const youtubeToggle = document.getElementById('youtubeToggle');
+        const youtubePanel = document.getElementById('youtubePanel');
+        const searchBtn = document.getElementById('searchBtn');
+        const youtubeSearch = document.getElementById('youtubeSearch');
+        const closePlayer = document.getElementById('closePlayer');
+        
+        // Toggle YouTube panel
+        youtubeToggle.addEventListener('click', () => {
+            youtubePanel.classList.toggle('hidden');
+        });
+        
+        // Search functionality
+        searchBtn.addEventListener('click', () => {
+            this.searchYouTube(youtubeSearch.value);
+        });
+        
+        youtubeSearch.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.searchYouTube(youtubeSearch.value);
+            }
+        });
+        
+        // Close player
+        closePlayer.addEventListener('click', () => {
+            this.closeYouTubePlayer();
+        });
+    }
+    
+    async searchYouTube(query) {
+        if (!query.trim()) return;
+        
+        const resultsContainer = document.getElementById('youtubeResults');
+        resultsContainer.innerHTML = '<div class="search-loading">Searching YouTube...</div>';
+        
+        try {
+            // Note: In a real implementation, you would use YouTube Data API v3
+            // For demo purposes, we'll create mock results
+            // You'll need to implement actual API integration with your API key
+            
+            const mockResults = this.generateMockYouTubeResults(query);
+            this.displayYouTubeResults(mockResults);
+            
+        } catch (error) {
+            console.error('YouTube search error:', error);
+            resultsContainer.innerHTML = '<div class="search-error">Search failed. Please try again.</div>';
+        }
+    }
+    
+    generateMockYouTubeResults(query) {
+        // Mock data for demonstration - replace with actual YouTube API call
+        return [
+            {
+                id: 'dQw4w9WgXcQ',
+                title: `${query} - Official Music Video`,
+                channelTitle: 'Artist Official',
+                thumbnail: 'https://via.placeholder.com/120x90/ff0000/ffffff?text=YT',
+                duration: '3:32'
+            },
+            {
+                id: 'L_jWHffIx5E',
+                title: `${query} (Live Performance)`,
+                channelTitle: 'Live Music Channel',
+                thumbnail: 'https://via.placeholder.com/120x90/ff0000/ffffff?text=YT',
+                duration: '4:15'
+            },
+            {
+                id: 'kJQP7kiw5Fk',
+                title: `${query} - Acoustic Version`,
+                channelTitle: 'Acoustic Sessions',
+                thumbnail: 'https://via.placeholder.com/120x90/ff0000/ffffff?text=YT',
+                duration: '3:45'
+            }
+        ];
+    }
+    
+    displayYouTubeResults(results) {
+        const resultsContainer = document.getElementById('youtubeResults');
+        
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<div class="no-results">No results found.</div>';
+            return;
+        }
+        
+        resultsContainer.innerHTML = results.map(video => `
+            <div class="youtube-result" data-video-id="${video.id}" data-title="${video.title}">
+                <img src="${video.thumbnail}" alt="${video.title}" class="result-thumbnail">
+                <div class="result-info">
+                    <div class="result-title">${video.title}</div>
+                    <div class="result-channel">${video.channelTitle}</div>
+                    <div class="result-duration">${video.duration}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add click listeners to results
+        resultsContainer.querySelectorAll('.youtube-result').forEach(result => {
+            result.addEventListener('click', () => {
+                const videoId = result.dataset.videoId;
+                const title = result.dataset.title;
+                this.playYouTubeVideo(videoId, title);
+            });
+        });
+    }
+    
+    playYouTubeVideo(videoId, title) {
+        const player = document.getElementById('youtubePlayer');
+        const iframe = document.getElementById('ytPlayer');
+        const titleElement = document.getElementById('currentVideoTitle');
+        
+        // Set video in iframe
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+        titleElement.textContent = title;
+        
+        // Show player
+        player.classList.remove('hidden');
+        
+        // Update status
+        this.currentYouTubeVideo = { id: videoId, title: title };
+        this.isYouTubeMode = true;
+        
+        this.updateStatus('Playing YouTube video');
+        document.getElementById('connectionStatus').textContent = 'YOUTUBE';
+        document.getElementById('songInfo').textContent = title;
+        
+        // Note: For full audio visualization, you would need to capture audio from the iframe
+        // This requires additional implementation with YouTube Player API
+        this.simulateYouTubeAudio();
+    }
+    
+    closeYouTubePlayer() {
+        const player = document.getElementById('youtubePlayer');
+        const iframe = document.getElementById('ytPlayer');
+        
+        iframe.src = '';
+        player.classList.add('hidden');
+        
+        this.isYouTubeMode = false;
+        this.currentYouTubeVideo = null;
+        
+        this.updateStatus('YouTube player closed');
+        document.getElementById('connectionStatus').textContent = 'READY';
+        document.getElementById('songInfo').textContent = 'No track loaded';
+        
+        this.stopVisualization();
+        this.clearCanvas();
+    }
+    
+    simulateYouTubeAudio() {
+        // Simulate audio visualization for YouTube videos
+        // In a real implementation, you would capture actual audio
+        if (!this.isYouTubeMode) return;
+        
+        if (!this.analyser) {
+            this.initAudioContext();
+        }
+        
+        // Generate simulated frequency data
+        if (this.dataArray) {
+            for (let i = 0; i < this.bufferLength; i++) {
+                this.dataArray[i] = Math.random() * 100 + Math.sin(this.time * 2 + i * 0.1) * 50 + 100;
+            }
+        }
+        
+        this.startVisualization();
+        
+        // Continue simulation
+        setTimeout(() => {
+            if (this.isYouTubeMode) {
+                this.simulateYouTubeAudio();
+            }
+        }, 100);
+    }
+    
     initParticles() {
         this.particles = [];
         for (let i = 0; i < 50; i++) {
