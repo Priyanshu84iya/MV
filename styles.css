@@ -470,6 +470,10 @@ body {
     #ytPlayer {
         height: 150px;
     }
+    
+    #ytPlayerContainer {
+        height: 150px;
+    }
 }
 
 .playback-controls {

@@ -1481,6 +1481,11 @@ class MusicVisualizer {
     }
 }
 
+// YouTube API ready callback
+function onYouTubeIframeAPIReady() {
+    console.log('YouTube API ready');
+}
+
 // Initialize the visualizer when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     new MusicVisualizer();
